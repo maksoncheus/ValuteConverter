@@ -5,8 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ValuteConverter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="200" Width="630">
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
 
+        <TextBox CommandManager.PreviewExecuted="TextBox_PreviewExecuted" AllowDrop="False" Text="{Binding LeftText, Mode=Default, UpdateSourceTrigger=PropertyChanged}" Padding="15" PreviewTextInput="TextBox_PreviewTextInput" Margin="15" Grid.Column="0">
+            <TextBox.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="15"/>
+                </Style>
+            </TextBox.Resources>
+        </TextBox>
+        <Button Grid.Column="1" Margin="15" Background="Transparent" BorderThickness="0">
+            <Button.Content>
+                <TextBlock VerticalAlignment="Center" FontSize="32" Text="⇆"/>
+            </Button.Content>
+        </Button>
+
+        <TextBox CommandManager.PreviewExecuted="TextBox_PreviewExecuted" Grid.Column="2" AllowDrop="False" Text="{Binding RightText, Mode=Default, UpdateSourceTrigger=PropertyChanged}" Padding="15" PreviewTextInput="TextBox_PreviewTextInput" Margin="15">
+            <TextBox.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="15"/>
+                </Style>
+            </TextBox.Resources>
+        </TextBox>
+
+        <Grid Grid.Row="2" Grid.ColumnSpan="3" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock></TextBlock>
+            <TextBlock Text ="{Binding DateText, StringFormat={}{0:c} • ЦБ РФ}" Grid.Row="2" VerticalAlignment="Center"/>
+        </Grid>
+        
     </Grid>
 </Window>

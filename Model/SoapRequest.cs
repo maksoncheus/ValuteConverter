@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 using System.IO;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
-using System.Data;
 
 namespace ValuteConverter
 {
@@ -20,7 +20,7 @@ namespace ValuteConverter
         /// <returns>An asynchronous operation that can return a value</returns>
         public static async Task<DataTable> GetCursOnDateAsync(DateTime dateTime)
         {
-            return await Task.Run( () => GetCursOnDate(dateTime) );
+            return await Task.Run(() => GetCursOnDate(dateTime));
         }
         /// <summary>
         /// Get exchange rates from <see href="https://cbr.ru/"/>
@@ -64,9 +64,9 @@ namespace ValuteConverter
             }
             catch (Exception ex)
             {
-                
+
             }
-            return ds.Tables[0] ?? null;
+            return ds?.Tables[0] ?? new DataTable();
         }
     }
 }

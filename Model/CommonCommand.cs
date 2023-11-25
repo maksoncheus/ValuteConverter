@@ -41,10 +41,10 @@ namespace ValuteConverter
 
         public event EventHandler? CanExecuteChanged;
 
-        public bool CanExecute(object parameter) => _canExecute?.Invoke((T)parameter) ?? true;
+        public bool CanExecute(object? parameter) => _canExecute?.Invoke((T?)parameter) ?? true;
 
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             if (CanExecute(parameter)) _execute.Invoke((T)parameter);
             RaiseCanExecuteChanged();

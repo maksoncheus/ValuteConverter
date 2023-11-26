@@ -20,9 +20,9 @@ namespace ValuteConverter
         private ObservableCollection<ValuteEntry> _valuteEntries;
 
         private ICommand _changeSides;
-        public string LeftText { get => _leftText; set { _leftText = UnifyInput(value); _rightText = (SelectedValuteLeft.ValuteCourse * Convert.ToDouble(_leftText) / SelectedValuteRight.ValuteCourse).ToString(); OnPropertyChanged(nameof(RightText)); OnPropertyChanged(nameof(LeftText)); } }
+        public string LeftText { get => _leftText; set { _leftText = InputHandler.Unify(value); ConvertLeftToRight(); OnPropertyChanged(nameof(LeftText)); } }
 
-        public string RightText { get => _rightText; set { _rightText = UnifyInput(value); OnPropertyChanged(nameof(RightText)); } }
+        public string RightText { get => _rightText; set { _rightText = InputHandler.Unify(value); ConvertRightToLeft();  OnPropertyChanged(nameof(RightText)); } }
         
         public string DateText { get => _dateText; set { _dateText = value; OnPropertyChanged(nameof(DateText)); } }
         public string OneUnitRate { get => _oneUnitRate; set { _oneUnitRate = value; OnPropertyChanged(nameof(OneUnitRate)); } }
@@ -45,6 +45,8 @@ namespace ValuteConverter
                 if (value == _selectedValuteRight)
                     ChangeSides.Execute(null);
                 else _selectedValuteLeft = value;
+                if (SelectedValuteRight != null)
+                    ConvertLeftToRight();
                 OnPropertyChanged(nameof(SelectedValuteLeft));
             }
         }
@@ -56,6 +58,8 @@ namespace ValuteConverter
                 if (value == _selectedValuteLeft)
                     ChangeSides.Execute(null);
                 else _selectedValuteRight = value;
+                if (SelectedValuteLeft != null)
+                    ConvertLeftToRight();
                 OnPropertyChanged(nameof(SelectedValuteRight));
             }
         }
@@ -64,17 +68,6 @@ namespace ValuteConverter
             DateText = DateOnly.FromDateTime(DateTime.Now).ToString();
             ValuteEntries = new();
             Task.Run(LoadValutes);
-        }
-        private static string UnifyInput(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return string.Empty;
-            input = input.Replace('.', ',');
-            if (input.StartsWith(','))
-                return string.Empty;
-            if (input.Count(c => c == ',') > 1)
-                input = new string(input.Take(input.Length - 1).ToArray());
-            return input;
         }
         private async void LoadValutes()
         {
@@ -86,6 +79,7 @@ namespace ValuteConverter
                 () =>
                 {
                     (_selectedValuteRight, _selectedValuteLeft) = (_selectedValuteLeft, _selectedValuteRight);
+                    ConvertLeftToRight();
                     OnPropertyChanged(nameof(SelectedValuteLeft));
                     OnPropertyChanged(nameof(SelectedValuteRight));
                 }
@@ -102,6 +96,26 @@ namespace ValuteConverter
             {
 
             }
+        }
+        private double ConvertValutes(ValuteEntry left, ValuteEntry right)
+        {
+            return left.ValuteCourse  / right.ValuteCourse;
+        }
+        private void ConvertLeftToRight()
+        {
+            if (string.IsNullOrEmpty(_leftText))
+                _rightText = string.Empty;
+            else
+                _rightText = Math.Round(Convert.ToDouble(_leftText) * ConvertValutes(_selectedValuteLeft, SelectedValuteRight), 2).ToString();
+            OnPropertyChanged(nameof(RightText));
+        }
+        private void ConvertRightToLeft()
+        {
+            if (string.IsNullOrEmpty(_rightText))
+                _leftText = string.Empty;
+            else
+                _leftText = Math.Round(Convert.ToDouble(_rightText) * ConvertValutes(SelectedValuteRight, SelectedValuteLeft), 2).ToString();
+            OnPropertyChanged(nameof(LeftText));
         }
     }
 }

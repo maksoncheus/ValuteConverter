@@ -46,7 +46,10 @@ namespace ValuteConverter
                     ChangeSides.Execute(null);
                 else _selectedValuteLeft = value;
                 if (SelectedValuteRight != null)
+                {
                     ConvertLeftToRight();
+                    OneUnitRate = Math.Round(ConvertValutes(_selectedValuteLeft, _selectedValuteRight), 5).ToString();
+                }
                 OnPropertyChanged(nameof(SelectedValuteLeft));
             }
         }
@@ -59,8 +62,11 @@ namespace ValuteConverter
                     ChangeSides.Execute(null);
                 else _selectedValuteRight = value;
                 if (SelectedValuteLeft != null)
+                {
                     ConvertLeftToRight();
-                OnPropertyChanged(nameof(SelectedValuteRight));
+                    OneUnitRate = Math.Round(ConvertValutes(_selectedValuteLeft, _selectedValuteRight), 5).ToString();
+                }
+                    OnPropertyChanged(nameof(SelectedValuteRight));
             }
         }
         public ViewModel()
@@ -79,6 +85,7 @@ namespace ValuteConverter
                 () =>
                 {
                     (_selectedValuteRight, _selectedValuteLeft) = (_selectedValuteLeft, _selectedValuteRight);
+                    OneUnitRate = Math.Round(ConvertValutes(_selectedValuteLeft, _selectedValuteRight), 5).ToString();
                     ConvertLeftToRight();
                     OnPropertyChanged(nameof(SelectedValuteLeft));
                     OnPropertyChanged(nameof(SelectedValuteRight));
@@ -106,7 +113,9 @@ namespace ValuteConverter
             if (string.IsNullOrEmpty(_leftText))
                 _rightText = string.Empty;
             else
+            {
                 _rightText = Math.Round(Convert.ToDouble(_leftText) * ConvertValutes(_selectedValuteLeft, SelectedValuteRight), 2).ToString();
+            }
             OnPropertyChanged(nameof(RightText));
         }
         private void ConvertRightToLeft()

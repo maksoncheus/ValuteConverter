@@ -251,7 +251,15 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock Foreground="{StaticResource MainColor}"></TextBlock>
+            <TextBlock Foreground="{StaticResource MainColor}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}1 {0} = {1} {2}">
+                        <Binding Path="SelectedValuteLeft.ValuteName"/>
+                        <Binding Path="OneUnitRate"/>
+                        <Binding Path="SelectedValuteRight.ValuteName"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <TextBlock Foreground="{StaticResource MainColor}" Text ="{Binding DateText, StringFormat={}{0:c} • ЦБ РФ}" Grid.Row="2" VerticalAlignment="Center"/>
         </Grid>
         <Border Grid.ColumnSpan="3" Grid.RowSpan="2" Opacity="0.85" Background="Gray">
